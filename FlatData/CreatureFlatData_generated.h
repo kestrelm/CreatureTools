@@ -828,6 +828,12 @@ inline flatbuffers::Offset<rootData> CreaterootData(flatbuffers::FlatBufferBuild
   return builder_.Finish();
 }
 
+inline const CreatureFlatData::rootData *GetrootData(const void *buf) { return flatbuffers::GetRoot<CreatureFlatData::rootData>(buf); }
+
+inline bool VerifyrootDataBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<CreatureFlatData::rootData>(); }
+
+inline void FinishrootDataBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<CreatureFlatData::rootData> root) { fbb.Finish(root); }
+
 }  // namespace CreatureFlatData
 
 #endif  // FLATBUFFERS_GENERATED_CREATUREFLATDATA_CREATUREFLATDATA_H_

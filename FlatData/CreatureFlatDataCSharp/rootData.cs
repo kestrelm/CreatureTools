@@ -36,6 +36,7 @@ public sealed class rootData : Table {
     int o = builder.EndObject();
     return new Offset<rootData>(o);
   }
+  public static void FinishrootDataBuffer(FlatBufferBuilder builder, Offset<rootData> offset) { builder.Finish(offset.Value); }
 };
 
 

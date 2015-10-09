@@ -415,16 +415,15 @@ static bool ConvertToFlatData(const std::string& json_filename_in,
     flat_animation.add_clips(write_animation_clip_list);
     auto flat_animation_loc = flat_animation.Finish();
     
-    
-    
     // ------- Root Data -------------- //
     CreatureFlatData::rootDataBuilder flat_root(fbb);
     flat_root.add_dataSkeleton(flat_skeleton_loc);
     flat_root.add_dataMesh(flat_mesh_loc);
     flat_root.add_dataAnimation(flat_animation_loc);
-    flat_root.Finish();
+    auto flat_root_loc = flat_root.Finish();
     
-    
+    CreatureFlatData::FinishrootDataBuffer(fbb, flat_root_loc);
+
     // ---- Serialize to Disk ------------- //
     remove(flat_filename_out.c_str());
     std::ofstream ofile(flat_filename_out.c_str(), std::ios::binary);

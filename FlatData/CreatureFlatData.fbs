@@ -136,3 +136,5 @@ table rootData {
 	dataSkeleton:skeleton;
 	dataAnimation:animation;
 }
+
+root_type rootData;
