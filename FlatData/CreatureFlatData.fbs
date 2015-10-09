@@ -1,0 +1,138 @@
+namespace CreatureFlatData;
+
+// mesh
+
+table meshRegionBone {
+	name:string;
+	weights:[float];
+}
+
+table meshRegion {
+	name:string;
+	start_pt_index:int;
+	end_pt_index:int;
+	start_index:int;
+	end_index:int;
+	id:int;
+	weights:[meshRegionBone];
+}
+
+table mesh {
+	points:[float];
+	uvs:[float];
+	indices:[int];
+	regions:[meshRegion];
+}
+
+// skeleton
+
+table skeletonBone {
+	name:string;
+	id:int;
+	restParentMat:[float];
+	localRestStartPt:[float];
+	localRestEndPt:[float];
+	children:[int];
+}
+
+table skeleton {
+	bones:[skeletonBone];
+}
+
+// animation
+
+// animation bone
+
+table animationBone {
+	name:string;
+	start_pt:[float];
+	end_pt:[float];
+}
+
+table animationBonesTimeSample {
+	bones:[animationBone];
+	time:int;
+}
+
+table animationBonesList {
+	timeSamples:[animationBonesTimeSample];
+}
+
+// animation mesh
+
+table animationMesh {
+	name:string;
+	use_dq:bool;
+	use_local_displacements:bool;
+	use_post_displacements:bool;
+	local_displacements:[float];
+	post_displacements:[float];
+}
+
+table animationMeshTimeSample {
+	meshes:[animationMesh];
+	time:int;
+}
+
+table animationMeshList {
+	timeSamples:[animationMeshTimeSample];
+}
+
+// animation uv swap
+
+table animationUVSwap {
+	name:string;
+	local_offset:[float];
+	global_offset:[float];
+	scale:[float];
+	enabled:bool;
+}
+
+table animationUVSwapTimeSample {
+	uvSwaps:[animationUVSwap];
+	time:int;
+}
+
+table animationUVSwapList {
+	timeSamples:[animationUVSwapTimeSample];
+}
+
+// animation mesh opacity
+
+table animationMeshOpacity {
+	name:string;
+	opacity:float;
+}
+
+table animationMeshOpacityTimeSample {
+	meshOpacities:[animationMeshOpacity];
+	time:int;
+}
+
+table animationMeshOpacityList {
+	timeSamples:[animationMeshOpacityTimeSample];
+}
+
+// animation clip
+
+table animationClip {
+	name:string;
+	bones:animationBonesList;
+	meshes:animationMeshList;
+	uvSwaps:animationUVSwapList;
+	meshOpacities:animationMeshOpacityList;
+}
+
+// animation
+
+table animation {
+	clips:[animationClip];
+}
+
+// root data
+
+table rootData {
+	dataMesh:mesh;
+	dataSkeleton:skeleton;
+	dataAnimation:animation;
+}
