@@ -27,6 +27,11 @@ struct animationMeshOpacityTimeSample;
 struct animationMeshOpacityList;
 struct animationClip;
 struct animation;
+struct uvSwapItemData;
+struct uvSwapItemMesh;
+struct uvSwapItemHolder;
+struct anchorPointData;
+struct anchorPointsHolder;
 struct rootData;
 
 struct meshRegionBone FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -787,10 +792,189 @@ inline flatbuffers::Offset<animation> Createanimation(flatbuffers::FlatBufferBui
   return builder_.Finish();
 }
 
+struct uvSwapItemData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  const flatbuffers::Vector<float> *local_offset() const { return GetPointer<const flatbuffers::Vector<float> *>(4); }
+  const flatbuffers::Vector<float> *global_offset() const { return GetPointer<const flatbuffers::Vector<float> *>(6); }
+  const flatbuffers::Vector<float> *scale() const { return GetPointer<const flatbuffers::Vector<float> *>(8); }
+  int32_t tag() const { return GetField<int32_t>(10, 0); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* local_offset */) &&
+           verifier.Verify(local_offset()) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 6 /* global_offset */) &&
+           verifier.Verify(global_offset()) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 8 /* scale */) &&
+           verifier.Verify(scale()) &&
+           VerifyField<int32_t>(verifier, 10 /* tag */) &&
+           verifier.EndTable();
+  }
+};
+
+struct uvSwapItemDataBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_local_offset(flatbuffers::Offset<flatbuffers::Vector<float>> local_offset) { fbb_.AddOffset(4, local_offset); }
+  void add_global_offset(flatbuffers::Offset<flatbuffers::Vector<float>> global_offset) { fbb_.AddOffset(6, global_offset); }
+  void add_scale(flatbuffers::Offset<flatbuffers::Vector<float>> scale) { fbb_.AddOffset(8, scale); }
+  void add_tag(int32_t tag) { fbb_.AddElement<int32_t>(10, tag, 0); }
+  uvSwapItemDataBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  uvSwapItemDataBuilder &operator=(const uvSwapItemDataBuilder &);
+  flatbuffers::Offset<uvSwapItemData> Finish() {
+    auto o = flatbuffers::Offset<uvSwapItemData>(fbb_.EndTable(start_, 4));
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<uvSwapItemData> CreateuvSwapItemData(flatbuffers::FlatBufferBuilder &_fbb,
+   flatbuffers::Offset<flatbuffers::Vector<float>> local_offset = 0,
+   flatbuffers::Offset<flatbuffers::Vector<float>> global_offset = 0,
+   flatbuffers::Offset<flatbuffers::Vector<float>> scale = 0,
+   int32_t tag = 0) {
+  uvSwapItemDataBuilder builder_(_fbb);
+  builder_.add_tag(tag);
+  builder_.add_scale(scale);
+  builder_.add_global_offset(global_offset);
+  builder_.add_local_offset(local_offset);
+  return builder_.Finish();
+}
+
+struct uvSwapItemMesh FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(4); }
+  const flatbuffers::Vector<flatbuffers::Offset<uvSwapItemData>> *items() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<uvSwapItemData>> *>(6); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* name */) &&
+           verifier.Verify(name()) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 6 /* items */) &&
+           verifier.Verify(items()) &&
+           verifier.VerifyVectorOfTables(items()) &&
+           verifier.EndTable();
+  }
+};
+
+struct uvSwapItemMeshBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_name(flatbuffers::Offset<flatbuffers::String> name) { fbb_.AddOffset(4, name); }
+  void add_items(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<uvSwapItemData>>> items) { fbb_.AddOffset(6, items); }
+  uvSwapItemMeshBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  uvSwapItemMeshBuilder &operator=(const uvSwapItemMeshBuilder &);
+  flatbuffers::Offset<uvSwapItemMesh> Finish() {
+    auto o = flatbuffers::Offset<uvSwapItemMesh>(fbb_.EndTable(start_, 2));
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<uvSwapItemMesh> CreateuvSwapItemMesh(flatbuffers::FlatBufferBuilder &_fbb,
+   flatbuffers::Offset<flatbuffers::String> name = 0,
+   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<uvSwapItemData>>> items = 0) {
+  uvSwapItemMeshBuilder builder_(_fbb);
+  builder_.add_items(items);
+  builder_.add_name(name);
+  return builder_.Finish();
+}
+
+struct uvSwapItemHolder FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  const flatbuffers::Vector<flatbuffers::Offset<uvSwapItemMesh>> *meshes() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<uvSwapItemMesh>> *>(4); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* meshes */) &&
+           verifier.Verify(meshes()) &&
+           verifier.VerifyVectorOfTables(meshes()) &&
+           verifier.EndTable();
+  }
+};
+
+struct uvSwapItemHolderBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_meshes(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<uvSwapItemMesh>>> meshes) { fbb_.AddOffset(4, meshes); }
+  uvSwapItemHolderBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  uvSwapItemHolderBuilder &operator=(const uvSwapItemHolderBuilder &);
+  flatbuffers::Offset<uvSwapItemHolder> Finish() {
+    auto o = flatbuffers::Offset<uvSwapItemHolder>(fbb_.EndTable(start_, 1));
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<uvSwapItemHolder> CreateuvSwapItemHolder(flatbuffers::FlatBufferBuilder &_fbb,
+   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<uvSwapItemMesh>>> meshes = 0) {
+  uvSwapItemHolderBuilder builder_(_fbb);
+  builder_.add_meshes(meshes);
+  return builder_.Finish();
+}
+
+struct anchorPointData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  const flatbuffers::Vector<float> *point() const { return GetPointer<const flatbuffers::Vector<float> *>(4); }
+  const flatbuffers::String *anim_clip_name() const { return GetPointer<const flatbuffers::String *>(6); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* point */) &&
+           verifier.Verify(point()) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 6 /* anim_clip_name */) &&
+           verifier.Verify(anim_clip_name()) &&
+           verifier.EndTable();
+  }
+};
+
+struct anchorPointDataBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_point(flatbuffers::Offset<flatbuffers::Vector<float>> point) { fbb_.AddOffset(4, point); }
+  void add_anim_clip_name(flatbuffers::Offset<flatbuffers::String> anim_clip_name) { fbb_.AddOffset(6, anim_clip_name); }
+  anchorPointDataBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  anchorPointDataBuilder &operator=(const anchorPointDataBuilder &);
+  flatbuffers::Offset<anchorPointData> Finish() {
+    auto o = flatbuffers::Offset<anchorPointData>(fbb_.EndTable(start_, 2));
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<anchorPointData> CreateanchorPointData(flatbuffers::FlatBufferBuilder &_fbb,
+   flatbuffers::Offset<flatbuffers::Vector<float>> point = 0,
+   flatbuffers::Offset<flatbuffers::String> anim_clip_name = 0) {
+  anchorPointDataBuilder builder_(_fbb);
+  builder_.add_anim_clip_name(anim_clip_name);
+  builder_.add_point(point);
+  return builder_.Finish();
+}
+
+struct anchorPointsHolder FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  const flatbuffers::Vector<flatbuffers::Offset<anchorPointData>> *anchorPoints() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<anchorPointData>> *>(4); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* anchorPoints */) &&
+           verifier.Verify(anchorPoints()) &&
+           verifier.VerifyVectorOfTables(anchorPoints()) &&
+           verifier.EndTable();
+  }
+};
+
+struct anchorPointsHolderBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_anchorPoints(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<anchorPointData>>> anchorPoints) { fbb_.AddOffset(4, anchorPoints); }
+  anchorPointsHolderBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  anchorPointsHolderBuilder &operator=(const anchorPointsHolderBuilder &);
+  flatbuffers::Offset<anchorPointsHolder> Finish() {
+    auto o = flatbuffers::Offset<anchorPointsHolder>(fbb_.EndTable(start_, 1));
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<anchorPointsHolder> CreateanchorPointsHolder(flatbuffers::FlatBufferBuilder &_fbb,
+   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<anchorPointData>>> anchorPoints = 0) {
+  anchorPointsHolderBuilder builder_(_fbb);
+  builder_.add_anchorPoints(anchorPoints);
+  return builder_.Finish();
+}
+
 struct rootData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const mesh *dataMesh() const { return GetPointer<const mesh *>(4); }
   const skeleton *dataSkeleton() const { return GetPointer<const skeleton *>(6); }
   const animation *dataAnimation() const { return GetPointer<const animation *>(8); }
+  const uvSwapItemHolder *dataUvSwapItem() const { return GetPointer<const uvSwapItemHolder *>(10); }
+  const anchorPointsHolder *dataAnchorPoints() const { return GetPointer<const anchorPointsHolder *>(12); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* dataMesh */) &&
@@ -799,6 +983,10 @@ struct rootData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyTable(dataSkeleton()) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, 8 /* dataAnimation */) &&
            verifier.VerifyTable(dataAnimation()) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 10 /* dataUvSwapItem */) &&
+           verifier.VerifyTable(dataUvSwapItem()) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 12 /* dataAnchorPoints */) &&
+           verifier.VerifyTable(dataAnchorPoints()) &&
            verifier.EndTable();
   }
 };
@@ -809,10 +997,12 @@ struct rootDataBuilder {
   void add_dataMesh(flatbuffers::Offset<mesh> dataMesh) { fbb_.AddOffset(4, dataMesh); }
   void add_dataSkeleton(flatbuffers::Offset<skeleton> dataSkeleton) { fbb_.AddOffset(6, dataSkeleton); }
   void add_dataAnimation(flatbuffers::Offset<animation> dataAnimation) { fbb_.AddOffset(8, dataAnimation); }
+  void add_dataUvSwapItem(flatbuffers::Offset<uvSwapItemHolder> dataUvSwapItem) { fbb_.AddOffset(10, dataUvSwapItem); }
+  void add_dataAnchorPoints(flatbuffers::Offset<anchorPointsHolder> dataAnchorPoints) { fbb_.AddOffset(12, dataAnchorPoints); }
   rootDataBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   rootDataBuilder &operator=(const rootDataBuilder &);
   flatbuffers::Offset<rootData> Finish() {
-    auto o = flatbuffers::Offset<rootData>(fbb_.EndTable(start_, 3));
+    auto o = flatbuffers::Offset<rootData>(fbb_.EndTable(start_, 5));
     return o;
   }
 };
@@ -820,8 +1010,12 @@ struct rootDataBuilder {
 inline flatbuffers::Offset<rootData> CreaterootData(flatbuffers::FlatBufferBuilder &_fbb,
    flatbuffers::Offset<mesh> dataMesh = 0,
    flatbuffers::Offset<skeleton> dataSkeleton = 0,
-   flatbuffers::Offset<animation> dataAnimation = 0) {
+   flatbuffers::Offset<animation> dataAnimation = 0,
+   flatbuffers::Offset<uvSwapItemHolder> dataUvSwapItem = 0,
+   flatbuffers::Offset<anchorPointsHolder> dataAnchorPoints = 0) {
   rootDataBuilder builder_(_fbb);
+  builder_.add_dataAnchorPoints(dataAnchorPoints);
+  builder_.add_dataUvSwapItem(dataUvSwapItem);
   builder_.add_dataAnimation(dataAnimation);
   builder_.add_dataSkeleton(dataSkeleton);
   builder_.add_dataMesh(dataMesh);

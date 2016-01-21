@@ -415,11 +415,84 @@ static bool ConvertToFlatData(const std::string& json_filename_in,
     flat_animation.add_clips(write_animation_clip_list);
     auto flat_animation_loc = flat_animation.Finish();
     
+    // uv swap items
+    auto& uv_swap_items_obj = read_doc["uv_swap_items"];
+    
+    std::vector<flatbuffers::Offset<CreatureFlatData::uvSwapItemMesh>> item_meshes;
+    for (rapidjson::Value::MemberIterator cur_itr = uv_swap_items_obj.MemberBegin();
+         cur_itr != uv_swap_items_obj.MemberEnd();
+         ++cur_itr)
+    {
+        auto mesh_name = cur_itr->name.GetString();
+        auto& mesh_data = cur_itr->value;
+        
+        std::vector<flatbuffers::Offset<CreatureFlatData::uvSwapItemData>> item_list;
+        
+        for (int i = 0; i < mesh_data.Size(); i++)
+        {
+            CreatureFlatData::uvSwapItemDataBuilder flat_uv_swap_item_data(fbb);
+            
+            auto& m_obj = mesh_data[i];
+            auto write_local_offset = fbb.CreateVector(GetFloatArray(m_obj["local_offset"]));
+            auto write_global_offset = fbb.CreateVector(GetFloatArray(m_obj["global_offset"]));
+            auto write_scale = fbb.CreateVector(GetFloatArray(m_obj["scale"]));
+            
+            flat_uv_swap_item_data.add_local_offset(write_local_offset);
+            flat_uv_swap_item_data.add_global_offset(write_global_offset);
+            flat_uv_swap_item_data.add_scale(write_scale);
+            flat_uv_swap_item_data.add_tag(m_obj["tag"].GetInt());
+            
+            item_list.push_back(flat_uv_swap_item_data.Finish());
+        }
+        
+        auto write_mesh_name = fbb.CreateString(mesh_name);
+        auto write_item_list = fbb.CreateVector(item_list);
+        
+        
+        CreatureFlatData::uvSwapItemMeshBuilder flat_uv_swap_item_mesh(fbb);
+        flat_uv_swap_item_mesh.add_name(write_mesh_name);
+        flat_uv_swap_item_mesh.add_items(write_item_list);
+        
+        item_meshes.push_back(flat_uv_swap_item_mesh.Finish());
+    }
+    
+    CreatureFlatData::uvSwapItemHolderBuilder flat_uv_swap_item_holder(fbb);
+    auto write_item_meshes = fbb.CreateVector(item_meshes);
+    flat_uv_swap_item_holder.add_meshes(write_item_meshes);
+    auto flat_uv_swap_loc = flat_uv_swap_item_holder.Finish();
+    
+    
+    // anchor points
+    auto& anchor_points_obj = read_doc["anchor_points_items"]["AnchorPoints"];
+    
+    std::vector<flatbuffers::Offset<CreatureFlatData::anchorPointData>> anchor_list;
+    for (int i = 0; i < anchor_points_obj.Size(); i++)
+    {
+        CreatureFlatData::anchorPointDataBuilder flat_anchor_point_data_builder(fbb);
+        
+        auto& anchor_obj = anchor_points_obj[i];
+        auto write_point = fbb.CreateVector(GetFloatArray(anchor_obj["point"]));
+        auto write_anim_clip_name = fbb.CreateString(anchor_obj["anim_clip_name"].GetString());
+        
+        flat_anchor_point_data_builder.add_point(write_point);
+        flat_anchor_point_data_builder.add_anim_clip_name(write_anim_clip_name);
+        
+        anchor_list.push_back(flat_anchor_point_data_builder.Finish());
+    }
+    
+    CreatureFlatData::anchorPointsHolderBuilder flat_anchor_point_holder_builder(fbb);
+    auto write_anchor_list = fbb.CreateVector(anchor_list);
+    flat_anchor_point_holder_builder.add_anchorPoints(write_anchor_list);
+    auto flat_anchor_loc = flat_anchor_point_holder_builder.Finish();
+    
     // ------- Root Data -------------- //
     CreatureFlatData::rootDataBuilder flat_root(fbb);
     flat_root.add_dataSkeleton(flat_skeleton_loc);
     flat_root.add_dataMesh(flat_mesh_loc);
     flat_root.add_dataAnimation(flat_animation_loc);
+    flat_root.add_dataUvSwapItem(flat_uv_swap_loc);
+    flat_root.add_dataAnchorPoints(flat_anchor_loc);
+
     auto flat_root_loc = flat_root.Finish();
     
     CreatureFlatData::FinishrootDataBuffer(fbb, flat_root_loc);

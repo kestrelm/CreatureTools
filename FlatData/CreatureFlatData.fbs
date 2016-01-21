@@ -129,12 +129,41 @@ table animation {
 	clips:[animationClip];
 }
 
+// uv swap items
+table uvSwapItemData {
+	local_offset:[float];
+	global_offset:[float];
+	scale:[float];
+	tag:int;	
+}
+
+table uvSwapItemMesh {
+	name:string;
+	items:[uvSwapItemData];
+}
+
+table uvSwapItemHolder {
+	meshes:[uvSwapItemMesh];
+}
+
+// anchor points
+table anchorPointData {
+	point:[float];
+	anim_clip_name:string;
+}
+
+table anchorPointsHolder {
+	anchorPoints:[anchorPointData];
+}
+
 // root data
 
 table rootData {
 	dataMesh:mesh;
 	dataSkeleton:skeleton;
 	dataAnimation:animation;
+	dataUvSwapItem:uvSwapItemHolder;
+	dataAnchorPoints:anchorPointsHolder;
 }
 
 root_type rootData;
