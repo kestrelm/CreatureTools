@@ -14,8 +14,7 @@
 #include <ConvertFlatData.h>
 
 
-int main(int argc, const char * argv[]) {
-    
+int main(int argc, const char * argv[]) {    
     if(argc != 3)
     {
         std::cerr<<"Runtime arguments: <Input JSON File> <Output FBB File>"<<std::endl;

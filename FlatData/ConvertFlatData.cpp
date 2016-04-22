@@ -279,7 +279,7 @@ bool ConvertToFlatData(const std::string& json_filename_in,
 
 				if (cur_obj.HasMember("post_displacements"))
 				{
-					flat_animation_mesh.add_local_displacements(write_post_displacements);
+					flat_animation_mesh.add_post_displacements(write_post_displacements);
 				}
 
 				animation_mesh_list.push_back(flat_animation_mesh.Finish());
